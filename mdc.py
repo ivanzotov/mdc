@@ -1,14 +1,14 @@
 import maya.cmds as cmds
 import maya.mel as mel
 
-# Prepare selected objects for cache in world coord
-def prepare(setname="for_cache", groupname="for_cache_group"):
+# Prepare selected objects for cache
+def prepare(setname="cache", groupname="cache", prefix="cache_"):
     selection = cmds.ls(sl=True, l=True)
-    selection_shapes = cmds.ls(sl=True, s=True, dag=True, ni=False)
     
     if len(selection) == 0:
-        cmds.warning("Please select objects for cache!")
+        cmds.warning("Please select objects!")
         return
+        
     cmds.duplicate()
     dup = cmds.ls(sl=True, l=True)
     
@@ -18,21 +18,35 @@ def prepare(setname="for_cache", groupname="for_cache_group"):
         cmds.group(w=True, n=groupname)
     
     cmds.select(groupname)
-    dup = cmds.ls(sl=True, s=True, dag=True, ni=True, l=True)
-    
-    if cmds.objExists(setname):
-        cmds.sets(dup, add=setname)    
-    else:
-        set = cmds.sets(dup, n=setname)
+    setofshapes(setname)
     
     i = 0
     for obj in dup:
         cmds.blendShape([selection[i], obj], w=(0, 1),o="world", foc=True)
         objects = []
         objects.append(obj)
-        addattr(objects, "cache_"+str(i))
+        addattr(objects, prefix+str(i))
         i=i+1
-        
+
+# Create shapes's set of selected objects
+def setofshapes(setname):
+    sel = shapes()
+    
+    if cmds.objExists(setname):
+        cmds.sets(sel, add=setname)    
+    else:
+        cmds.sets(sel, n=setname)
+
+# Return shapes of selected objects
+def shapes()
+    return cmds.ls(sl=True, s=True, dag=True, ni=True, l=True)
+
+# Blend in world coords
+def blend():
+    sel = cmds.ls(sl=True)
+    cmds.blendShape([sel[0], sel[1]], w=(0, 1),o="world", foc=True)
+    cmds.hide(sel[0])
+               
 # Add attribute for selected objects       
 def addattr(objects=False, name="cache", attrcachefile="cachefile"):
     if objects == False:
@@ -50,17 +64,21 @@ def delattr(attrcachefile="cachefile"):
         cmds.deleteAttr(obj+"."+attrcachefile)
 
 #Caching selected shapes
-def create(start, end, dir, attrcachefile="cachefile"):
+def create(start, end, dir, smr=1, sch=False, attrcachefile="cachefile"):
     set = cmds.ls(sl=True, l=True)
    
     if len(set) == 0:
         cmds.warning("Please select objects!")
         return
+
+    if sch == True:
+        cmds.cacheFile(f=attrcachefile, staticCache=0, st=start, et=end, sch=True, points=set, smr=smr, dir=dir, format='OneFile')   
+        return
        
     i = 0
     for shape in set:
         cachefile = cmds.getAttr(shape+"."+attrcachefile)
-        cmds.cacheFile(f=cachefile, staticCache=0, st=start, et=end, points=shape, dir=dir, format='OneFile')
+        cmds.cacheFile(f=cachefile, staticCache=0, st=start, et=end, points=shape, smr=smr, dir=dir, format='OneFile')
         i=i+1
 
 #Connect cache to selected shapes
