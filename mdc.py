@@ -2,7 +2,7 @@ import maya.cmds as cmds
 import maya.mel as mel
 
 # Prepare selected objects for cache
-def prepare(setname="cache", groupname="cache", prefix="cache_"):
+def prepare(setname="cache_set", groupname="cache_group", prefix="cache_"):
     selection = cmds.ls(sl=True, l=True)
     
     if len(selection) == 0:
@@ -18,7 +18,8 @@ def prepare(setname="cache", groupname="cache", prefix="cache_"):
         cmds.group(w=True, n=groupname)
     
     cmds.select(groupname)
-    setofshapes(setname)
+    dup = shapes()
+    setofshapes(setname, dup)
     
     i = 0
     for obj in dup:
@@ -29,16 +30,17 @@ def prepare(setname="cache", groupname="cache", prefix="cache_"):
         i=i+1
 
 # Create shapes's set of selected objects
-def setofshapes(setname):
-    sel = shapes()
-    
+def setofshapes(setname, sel=False):    
+    if sel == False:
+        sel = shapes()
+
     if cmds.objExists(setname):
         cmds.sets(sel, add=setname)    
     else:
         cmds.sets(sel, n=setname)
 
 # Return shapes of selected objects
-def shapes()
+def shapes():
     return cmds.ls(sl=True, s=True, dag=True, ni=True, l=True)
 
 # Blend in world coords
