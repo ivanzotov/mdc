@@ -18,8 +18,8 @@ def prepare(setname="cache_set", groupname="cache_group", prefix="cache_"):
         cmds.group(w=True, n=groupname)
     
     cmds.select(groupname)
-    dup = shapes()
-    setofshapes(setname, dup)
+    dup = get_shapes()
+    add_to_set_of_shapes(setname, dup)
     
     i = 0
     for obj in dup:
@@ -29,10 +29,14 @@ def prepare(setname="cache_set", groupname="cache_group", prefix="cache_"):
         addattr(objects, prefix+str(i))
         i=i+1
 
+# Prepare selected objects for attach
+def prepare_for_attach(setname, sel=False):
+    add_to_set_of_shapes(setname, sel)
+
 # Create shapes's set of selected objects
-def setofshapes(setname, sel=False):    
+def add_to_set_of_shapes(setname, sel=False):    
     if sel == False:
-        sel = shapes()
+        sel = get_shapes()
 
     if cmds.objExists(setname):
         cmds.sets(sel, add=setname)    
@@ -40,8 +44,11 @@ def setofshapes(setname, sel=False):
         cmds.sets(sel, n=setname)
 
 # Return shapes of selected objects
-def shapes():
-    return cmds.ls(sl=True, s=True, dag=True, ni=True, l=True)
+def get_shapes(sel=False):
+    if sel == False:
+        sel = cmds.ls(sl=True, l=True)
+        
+    return cmds.ls(sel, s=True, dag=True, ni=True, l=True)
 
 # Blend in world coords
 def blend():
