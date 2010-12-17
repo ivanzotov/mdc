@@ -15,25 +15,24 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
       cmds.warning("Reference "+ref+" not found")
       continue
 
-  for dir, sets in set_names.iteritems():
-    for set in sets:
-      if len(cmds.ls(set)) == 0:
-        cmds.warning("Set "+set+" doesn't exists")
-        continue
+  for dir, set in set_names.iteritems():
+    if len(cmds.ls(set)) == 0:
+      cmds.warning("Set "+set+" doesn't exists")
+      continue
 
-      cmds.select(set, r=True)
+    cmds.select(set, r=True)
+  
+    if start==False:
+      start = cmds.playbackOptions(q=True, min=True)
+    if end==False:
+      end = cmds.playbackOptions(q=True, max=True)
     
-      if start==False:
-        start = cmds.playbackOptions(q=True, min=True)
-      if end==False:
-        end = cmds.playbackOptions(q=True, max=True)
-      
-      if file_or_dir:
-        create(start, end, save_cache_to+"/"+dir, step)
-      else:
-        create(start, end, save_cache_to+"/"+file_or_dir_name.rstrip(".mb")+"/"+dir, step)
-    
-      print "Cache saved to " + save_cache_to
+    if file_or_dir:
+      create(start, end, save_cache_to+"/"+dir, step)
+    else:
+      create(start, end, save_cache_to+"/"+file_or_dir_name.rstrip(".mb")+"/"+dir, step)
+  
+    print "Cache saved to " + save_cache_to
 
 file_or_dir = file_or_dir.rstrip("/")
 save_cache_to = save_cache_to.rstrip("/")

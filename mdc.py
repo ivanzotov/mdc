@@ -1,8 +1,6 @@
 import maya.cmds as cmds
 import maya.mel as mel
 
-#TODO Correct cache
-
 # Prepare selected objects for cache
 def prepare(setname="cache_set", groupname="cache_group", prefix="cache_"):
     selection = cmds.ls(sl=True, l=True)
