@@ -1,10 +1,10 @@
 import maya.cmds as cmds
 import maya.mel as mel
 import maya.standalone
-from mdc import *
-from mdc_batch_settings import *
 import sys
 import os
+from mdc import *
+from mdc_batch_settings import *
 
 maya.standalone.initialize()
 
@@ -12,14 +12,14 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
   for ref, replace_to in refs.iteritems():
     replace_to = replace_to.replace("?", ref)
     if replace_ref(ref, replace_to) == False:
-      print "References not found"
-      exit(0)
+      print "Reference "+ref+" not found"
+      continue
 
   for dir, sets in set_names.iteritems():
     for set in sets:
       if len(cmds.ls(set)) == 0:
         print "Set "+set+" doesn't exists"
-        exit(0)
+        continue
 
       cmds.select(set, r=True)
     
@@ -50,6 +50,3 @@ if os.path.isdir(file_or_dir):
   for file in cmds.getFileList(folder=file_or_dir+"/"):
     cmds.file(file_or_dir+"/"+file, o=True)
     batch(file, set_names, save_cache_to, start, end, False)
-
-
-
