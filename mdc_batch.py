@@ -12,13 +12,13 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
   for ref, replace_to in refs.iteritems():
     replace_to = replace_to.replace("?", ref)
     if replace_ref(ref, replace_to) == False:
-      print "Reference "+ref+" not found"
+      cmds.warning("Reference "+ref+" not found")
       continue
 
   for dir, sets in set_names.iteritems():
     for set in sets:
       if len(cmds.ls(set)) == 0:
-        print "Set "+set+" doesn't exists"
+        cmds.warning("Set "+set+" doesn't exists")
         continue
 
       cmds.select(set, r=True)
@@ -29,9 +29,9 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
         end = cmds.playbackOptions(q=True, max=True)
       
       if file_or_dir:
-        create(start, end, save_cache_to+"/"+dir)
+        create(start, end, save_cache_to+"/"+dir, step)
       else:
-        create(start, end, save_cache_to+"/"+file_or_dir_name.rstrip(".mb")+"/"+dir)
+        create(start, end, save_cache_to+"/"+file_or_dir_name.rstrip(".mb")+"/"+dir, step)
     
       print "Cache saved to " + save_cache_to
 
@@ -39,7 +39,7 @@ file_or_dir = file_or_dir.rstrip("/")
 save_cache_to = save_cache_to.rstrip("/")
 
 if not os.path.exists(file_or_dir):
-  print "File or dir "+file_or_dir+" doesn't exists"
+  cmds.warning("File or dir "+file_or_dir+" doesn't exists")
   exit(0)
 
 if os.path.isfile(file_or_dir):

@@ -75,17 +75,13 @@ def delattr(attrcachefile="cachefile"):
         cmds.deleteAttr(obj+"."+attrcachefile)
 
 #Caching selected shapes
-def create(start, end, dir, smr=1, sch=False, attrcachefile="cachefile"):
+def create(start, end, dir, smr=1, attrcachefile="cachefile"):
     set = cmds.ls(sl=True, l=True)
    
     if len(set) == 0:
         cmds.warning("Please select objects!")
         return
-
-    if sch == True:
-        cmds.cacheFile(f=attrcachefile, staticCache=0, st=start, et=end, sch=True, points=set, smr=smr, dir=dir, format='OneFile')   
-        return
-       
+    
     i = 0
     for shape in set:
         cachefile = cmds.getAttr(shape+"."+attrcachefile)
