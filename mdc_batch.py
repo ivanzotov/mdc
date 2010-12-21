@@ -4,7 +4,25 @@ import maya.standalone
 import sys
 import os
 from mdc import *
-from mdc_batch_settings import *
+
+if sys.argv[1] == "file_settings":
+  from mdc_batch_settings import *
+else:
+  file_or_dir = sys.argv[1]
+  refs = {}
+  for arg in sys.argv[2].split(","):
+    key, value = sys.argv[2].split(":", 1)
+    refs[key] = value
+  set_names = {}
+  for arg in sys.argv[3].split(","):
+    key, value = sys.argv[3].split(":", 1)
+    set_names[key] = value
+  save_cache_to = sys.argv[4]
+  start = False
+  if sys.argv[5] != "False": start = int(sys.argv[5])
+  end = False
+  if sys.argv[6] != "False": end = int(sys.argv[6])
+  step = sys.argv[7]
 
 maya.standalone.initialize()
 
@@ -44,8 +62,10 @@ if not os.path.exists(file_or_dir):
 if os.path.isfile(file_or_dir):
   cmds.file(file_or_dir, o=True)
   batch(file_or_dir, set_names, save_cache_to, start, end)
+  cmds.file(file_or_dir, mf=False)
 
 if os.path.isdir(file_or_dir):
   for file in cmds.getFileList(folder=file_or_dir+"/"):
     cmds.file(file_or_dir+"/"+file, o=True)
     batch(file, set_names, save_cache_to, start, end, False)
+    cmds.file(file_or_dir+"/"+file, mf=False)
