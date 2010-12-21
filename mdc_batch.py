@@ -7,23 +7,30 @@ from mdc import *
 
 # TODO If I need to cache dynamic of one object then other objects need be disabled
 
+def split_arg(arg):
+  tmp = {}
+  for a in arg.split(","):
+    key, value = a.split(":", 1)
+    key, value = key.strip(), value.strip()
+    tmp[key] = value
+  return tmp
+
 if sys.argv[1] == "file_settings":
   from mdc_batch_settings import *
 else:
   file_or_dir = sys.argv[1]
-  refs = {}
-  for arg in sys.argv[2].split(","):
-    key, value = sys.argv[2].split(":", 1)
-    refs[key] = value
-  set_names = {}
-  for arg in sys.argv[3].split(","):
-    key, value = sys.argv[3].split(":", 1)
-    set_names[key] = value
+
+  refs = split_arg(sys.argv[2])
+  set_names = split_arg(sys.argv[3])
+
   save_cache_to = sys.argv[4]
+
   start = False
   if sys.argv[5] != "False": start = int(sys.argv[5])
+
   end = False
   if sys.argv[6] != "False": end = int(sys.argv[6])
+
   step = sys.argv[7]
 
 maya.standalone.initialize()
@@ -74,3 +81,4 @@ if os.path.isdir(file_or_dir):
     cmds.file(file_or_dir+"/"+file, o=True)
     batch(file, set_names, save_cache_to, start, end, False)
     cmds.file(file_or_dir+"/"+file, mf=False)
+

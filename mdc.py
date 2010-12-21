@@ -1,6 +1,8 @@
 import maya.cmds as cmds
 import maya.mel as mel
 
+# TODO Auto find near objects to blend
+
 # Prepare selected objects for cache
 def prepare(setname="cache_set", groupname="cache_group", prefix="cache_"):
     selection = cmds.ls(sl=True, l=True)
@@ -98,7 +100,7 @@ def attach(dir, attrcachefile="cachefile"):
 
 # Replace ref
 def replace_ref(ref, path):
-  reference = cmds.ls("*"+ref+"*", rf=True, ln=False)
+  reference = cmds.ls(ref+"*", rf=True)
   if len(reference)==0:
     return False
   cmds.file(path, lr=reference[0])
