@@ -5,6 +5,8 @@ import sys
 import os
 from mdc import *
 
+# TODO If I need to cache dynamic of one object then other objects need be disabled
+
 if sys.argv[1] == "file_settings":
   from mdc_batch_settings import *
 else:
@@ -34,12 +36,11 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
       continue
 
   for dir, set in set_names.iteritems():
-    if len(cmds.ls(set)) == 0:
-      cmds.warning("Set "+set+" doesn't exists")
-      continue
-  
     objs = []
     for obj in set.split(","):
+      if len(cmds.ls(obj)) == 0:
+        cmds.warning(obj + " doesn't exists")
+        continue
       objs.append(obj)
 
     cmds.select(objs, r=True)
