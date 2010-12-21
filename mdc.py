@@ -98,7 +98,7 @@ def attach(dir, attrcachefile="cachefile"):
 
 # Replace ref
 def replace_ref(ref, path):
-  reference = cmds.ls("*"+ref+"*", rf=True)
+  reference = cmds.ls("*"+ref+"*", rf=True, ln=False)
   if len(reference)==0:
     return False
   cmds.file(path, lr=reference[0])
