@@ -37,8 +37,12 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
     if len(cmds.ls(set)) == 0:
       cmds.warning("Set "+set+" doesn't exists")
       continue
+  
+    objs = []
+    for obj in set.split(","):
+      objs.append(obj)
 
-    cmds.select(set, r=True)
+    cmds.select(objs, r=True)
   
     if start==False:
       start = cmds.playbackOptions(q=True, min=True)
