@@ -20,7 +20,10 @@ if sys.argv[1] == "file_settings":
 else:
   file_or_dir = sys.argv[1]
 
-  refs = split_arg(sys.argv[2])
+  refs = {}
+  if not sys.argv[2] == "":
+    refs = split_arg(sys.argv[2])
+
   set_names = split_arg(sys.argv[3])
 
   save_cache_to = sys.argv[4]
