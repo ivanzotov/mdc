@@ -1,9 +1,9 @@
-file_or_dir = "o:/project/scenes"
+file_or_dir = "o:/project/scenes/Episode_01_Scene_23.mb"
 template = "w:/work_files/work/characters/?/build_?_cache.mb"
 #template = "//snowqueen/03_characters/characters/?/builds/dynamic/build_?_cache.mb"
-refs = {'kareta':template} # will search ref by *key*, and replace to template
-set_names = {'kareta':'*kareta*:cache_set'}
-save_cache_to = "o:/project/data"
+refs = {'vegard':template} # will search ref by *key*, and replace to template
+set_names = {'vegard':'*vegard*:cache_set'}
+save_cache_to = "o:/project/data/Episode_01_Scene_23"
 start = False # get Timeslider min if False
 end = False # get Timeslider max if False
 step = 1

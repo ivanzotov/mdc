@@ -3,6 +3,9 @@ import maya.mel as mel
 
 # TODO Auto find near objects to blend
 
+completed_str = "Completed: %d percents"
+completed_per = 0
+
 # Prepare selected objects for cache
 def prepare(setname="cache_set", groupname="cache_group", prefix="cache_"):
     selection = cmds.ls(sl=True, l=True)
@@ -75,10 +78,11 @@ def delattr(attrcachefile="cachefile"):
         cmds.deleteAttr(obj+"."+attrcachefile)
 
 #Caching selected shapes
-def create(start, end, dir, smr=1, attrcachefile="cachefile"):
+def create(start, end, dir, smr=1, attrcachefile="cachefile", per=False):
     set = cmds.ls(sl=True, l=True)
-   
-    if len(set) == 0:
+
+    len_set = float(len(set))
+    if len_set == 0:
         cmds.warning("Please select objects!")
         return
     
@@ -86,6 +90,8 @@ def create(start, end, dir, smr=1, attrcachefile="cachefile"):
     for shape in set:
         cachefile = cmds.getAttr(shape+"."+attrcachefile)
         cmds.cacheFile(f=cachefile, staticCache=0, st=start, et=end, points=shape, smr=smr, dir=dir, format='OneFile')
+        if not per == False:
+          increase_per(per/len_set)
         i=i+1
 
 #Connect cache to selected shapes
@@ -104,4 +110,11 @@ def replace_ref(ref, path):
   if len(reference)==0:
     return False
   cmds.file(path, lr=reference[0])
+
+
+
+def increase_per(per):
+    global completed_per
+    completed_per = completed_per + per
+    print completed_str % completed_per
 
