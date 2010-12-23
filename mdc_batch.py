@@ -39,7 +39,7 @@ else:
 maya.standalone.initialize()
 
 def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, file_or_dir=True):
-  refs_per = 10/len(refs)
+  refs_per = 10.0/len(refs)
   print "refs per"
   for ref, replace_to in refs.iteritems():
     replace_to = replace_to.replace("?", ref)
@@ -49,10 +49,12 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
       cmds.warning("Reference "+ref+" not found")
       continue
 
-  dir_per = 90/len(set_names)
+  dir_per = 90.0/len(set_names)
   for dir, sets in set_names.iteritems():
     _sets = []
-    for set in sets.split(","):
+    sets_split = sets.split(",")
+    set_per = dir_per/len(sets_split)
+    for set in sets_split:
       if len(cmds.ls(set)) == 0:
         cmds.warning(set + " doesn't exists")
         increase_per(set_per)
@@ -67,9 +69,9 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
       end = cmds.playbackOptions(q=True, max=True)
     
     if file_or_dir:
-      create(start, end, save_cache_to+"/"+dir, step, per=dir_per)
+      create(start, end, save_cache_to+"/"+dir, step, per=set_per)
     else:
-      create(start, end, save_cache_to+"/"+file_or_dir_name.rstrip(".mb")+"/"+dir, step, per=dir_per)
+      create(start, end, save_cache_to+"/"+file_or_dir_name.rstrip(".mb")+"/"+dir, step, per=set_per)
   
     print "Cache saved to " + save_cache_to
 
