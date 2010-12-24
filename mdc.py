@@ -1,5 +1,6 @@
 import maya.cmds as cmds
 import maya.mel as mel
+import re
 
 # TODO Auto find near objects to blend
 
@@ -106,12 +107,12 @@ def attach(dir, attrcachefile="cachefile"):
 
 # Replace ref
 def replace_ref(ref, path):
-  references = cmds.ls(rf=True)
+  refs = cmds.ls(rf=True)
+  references = []
 
-  i = 0
-  for r in references:
-    references[i] = r.replace(":","_")
-    i = i + 1
+  for r in refs:
+    if re.match(".*"+ref+".*", r):
+      references.append(r)
 
   if len(references)==0:
     return False
@@ -123,3 +124,13 @@ def increase_per(per):
     completed_per = completed_per + per
     print completed_str % completed_per
 
+def ls_set(set_re, all_sets=False):
+  if all_sets == False:
+    all_sets = cmds.ls(set=True)
+
+  sets = []
+  for s in all_sets:
+    if re.match(set_re, s):
+      sets.append(s)
+
+  return sets

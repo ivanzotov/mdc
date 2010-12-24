@@ -40,7 +40,6 @@ maya.standalone.initialize()
 
 def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, file_or_dir=True):
   refs_per = 10.0/len(refs)
-  print "refs per"
   for ref, replace_to in refs.iteritems():
     replace_to = replace_to.replace("?", ref)
     result = replace_ref(ref, replace_to)
@@ -50,16 +49,18 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
       continue
 
   dir_per = 90.0/len(set_names)
+  all_sets = cmds.ls(set=True)
   for dir, sets in set_names.iteritems():
     _sets = []
     sets_split = sets.split(",")
     set_per = dir_per/len(sets_split)
     for set in sets_split:
-      if len(cmds.ls(set)) == 0:
+      ls_set_result = ls_set(set, all_sets)
+      if len(ls_set_result) == 0:
         cmds.warning(set + " doesn't exists")
         increase_per(set_per)
         continue
-      _sets.append(set)
+      _sets.append(ls_set_result[0])
 
     if len(_sets) == 0:
       continue
