@@ -122,7 +122,7 @@ def replace_ref(ref, path):
 def increase_per(per):
     global completed_per
     completed_per = completed_per + per
-    print completed_str % int(round(completed_per))
+    cmds.warning(completed_str % int(round(completed_per)))
 
 def ls_set(set_re, all_sets=False):
   if all_sets == False:

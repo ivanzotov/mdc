@@ -77,7 +77,7 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
     else:
       create(start, end, save_cache_to+"/"+file_or_dir_name.rstrip(".mb")+"/"+dir, step, per=set_per)
   
-    print "Cache saved to " + save_cache_to
+    cmds.warning("Cache saved to " + save_cache_to)
 
 file_or_dir = file_or_dir.rstrip("/")
 save_cache_to = save_cache_to.rstrip("/")
