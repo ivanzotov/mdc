@@ -106,12 +106,17 @@ def attach(dir, attrcachefile="cachefile"):
 
 # Replace ref
 def replace_ref(ref, path):
-  reference = cmds.ls(ref+"*", rf=True)
-  if len(reference)==0:
+  references = cmds.ls(rf=True)
+
+  i = 0
+  for r in references:
+    references[i] = r.replace(":","_")
+    i = i + 1
+
+  if len(references)==0:
     return False
-  cmds.file(path, lr=reference[0])
 
-
+  cmds.file(path, lr=references[0])
 
 def increase_per(per):
     global completed_per
