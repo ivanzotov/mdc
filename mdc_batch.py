@@ -61,6 +61,9 @@ def batch(file_or_dir_name, set_names, save_cache_to, start=False, end=False, fi
         continue
       _sets.append(set)
 
+    if len(_sets) == 0:
+      continue
+
     cmds.select(_sets, r=True)
   
     if start==False:
