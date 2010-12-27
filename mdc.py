@@ -1,6 +1,7 @@
 import maya.cmds as cmds
 import maya.mel as mel
 import re
+import math
 
 # TODO Auto find near objects to blend
 
@@ -134,3 +135,49 @@ def ls_set(set_re, all_sets=False):
       sets.append(s)
 
   return sets
+  
+  
+origin_objects = []
+other_objects = []
+
+not_same = []
+
+def get_origin():
+    global origin_objects
+    origin_objects = cmds.ls(sl=True)
+
+def get_other():
+    global other_objects
+    other_objects = cmds.ls(sl=True)
+    
+
+def blend_same(r=0):
+   global not_same
+   
+   not_same = []
+   
+   count = 0
+   
+   for org_obj in origin_objects:
+    org_min = cmds.getAttr(org_obj+'.boundingBoxMin')[0]
+    org_max = cmds.getAttr(org_obj+'.boundingBoxMax')[0]
+
+    for obj in other_objects:
+        min = cmds.getAttr(obj+'.boundingBoxMin')[0]
+        max = cmds.getAttr(obj+'.boundingBoxMax')[0]
+        
+        comp_min = math.sqrt(math.pow(org_min[0]-min[0], 2)+math.pow(org_min[1]-min[1], 2)+math.pow(org_min[2]-min[2], 2))
+        comp_max = math.sqrt(math.pow(org_max[0]-max[0], 2)+math.pow(org_max[1]-max[1], 2)+math.pow(org_max[2]-max[2], 2))       
+        
+        if comp_min <= r and comp_max <= r:
+            cmds.select(org_obj)
+            cmds.select(obj, add=True)
+            blend()
+            count = count + 1
+            
+        else:
+            not_same.append(obj)
+
+    print "Blended " + str(count)
+    print "Not same " + str(len(not_same))
+
