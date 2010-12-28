@@ -166,9 +166,9 @@ def blend_same(r=0):
         min = cmds.getAttr(obj+'.boundingBoxMin')[0]
         max = cmds.getAttr(obj+'.boundingBoxMax')[0]
         
-        comp_min = math.sqrt(math.pow(org_min[0]-min[0], 2)+math.pow(org_min[1]-min[1], 2)+math.pow(org_min[2]-min[2], 2))
-        comp_max = math.sqrt(math.pow(org_max[0]-max[0], 2)+math.pow(org_max[1]-max[1], 2)+math.pow(org_max[2]-max[2], 2))       
-        
+        comp_min = point_distance(org_min, min)
+        comp_max = point_distance(org_max, max)
+
         if comp_min <= r and comp_max <= r:
             cmds.select(org_obj)
             cmds.select(obj, add=True)
@@ -180,4 +180,10 @@ def blend_same(r=0):
 
     print "Blended " + str(count)
     print "Not same " + str(len(not_same))
+
+
+def point_distance(p1, p2):
+  return math.sqrt(math.pow(p1[0]-p2[0], 2)+math.pow(p1[1]-p2[1], 2)+math.pow(p1[2]-p2[2], 2))
+
+
 

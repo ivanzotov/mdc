@@ -1,0 +1,12 @@
+import maya.cmds as cmds
+sphere1 = cmds.polySphere(ch=1, o=1)
+sphere1shape = get_shapes()
+sphere2 = cmds.polySphere(ch=1, o=1)
+sphere2shape = get_shapes()
+cmds.select(sphere1)
+cmds.move(5,0,0)
+node = cmds.createNode("MyNode")
+cmds.select("MyNode1")
+cmds.connectAttr(sphere1shape[0]+".outMesh", node+".input",  f=True)
+cmds.connectAttr(node+".input", sphere2shape[0]+".inMesh",   f=True)
+
