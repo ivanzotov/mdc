@@ -158,7 +158,6 @@ def get_other():
 
 # Blend same objects
 def blend_same(r=0, step=0.1):   
-    not_same = []
     count = 0
     
     o_objects = other_objects
@@ -195,16 +194,11 @@ def blend_same(r=0, step=0.1):
                     or_objects.remove(org_obj)
                     
                     count = count + 1
-                else:
-                    try:
-                        not_same.index(obj)
-                    except ValueError:
-                        not_same.append(obj)
     
-        print "Blended " + str(count)
-        print "Not same " + str(len(not_same))
-        
         i = i + step
+
+    print "Blended " + str(count)
+        
 
 def plus_parent_transform(transform, parent_transform):
     return (transform[0]+parent_transform[12], transform[1]+parent_transform[13], transform[2]+parent_transform[14])
@@ -213,6 +207,7 @@ def plus_parent_transform(transform, parent_transform):
 # Return distance of two points
 def point_distance(p1, p2):
   return math.sqrt(math.pow(p2[0]-p1[0], 2)+math.pow(p2[1]-p1[1], 2)+math.pow(p2[2]-p1[2], 2))
+
 
 
 
