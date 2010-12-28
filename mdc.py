@@ -120,11 +120,13 @@ def replace_ref(ref, path):
   
   cmds.file(path, lr=references[0])
 
+# Incease percents ( used for batch )
 def increase_per(per):
     global completed_per
     completed_per = completed_per + per
     cmds.warning(completed_str % int(round(completed_per)))
 
+# Ls set by regular
 def ls_set(set_re, all_sets=False):
   if all_sets == False:
     all_sets = cmds.ls(set=True)
@@ -136,54 +138,81 @@ def ls_set(set_re, all_sets=False):
 
   return sets
   
-  
+
+# Objects that will be blendshaped 
 origin_objects = []
+
+# Objects where need find
 other_objects = []
 
-not_same = []
-
+# Load origin objects
 def get_origin():
     global origin_objects
     origin_objects = cmds.ls(sl=True)
 
+# Load other objects
 def get_other():
     global other_objects
     other_objects = cmds.ls(sl=True)
     
 
-def blend_same(r=0):
-   global not_same
-   
-   not_same = []
-   
-   count = 0
-   
-   for org_obj in origin_objects:
-    org_min = cmds.getAttr(org_obj+'.boundingBoxMin')[0]
-    org_max = cmds.getAttr(org_obj+'.boundingBoxMax')[0]
+# Blend same objects
+def blend_same(r=0, step=0.1):   
+    not_same = []
+    count = 0
+    
+    o_objects = other_objects
+    or_objects = origin_objects  
+    
+    i = 0  
 
-    for obj in other_objects:
-        min = cmds.getAttr(obj+'.boundingBoxMin')[0]
-        max = cmds.getAttr(obj+'.boundingBoxMax')[0]
-        
-        comp_min = point_distance(org_min, min)
-        comp_max = point_distance(org_max, max)
-
-        if comp_min <= r and comp_max <= r:
-            cmds.select(org_obj)
-            cmds.select(obj, add=True)
-            blend()
-            count = count + 1
+    while i < r:    
+        for org_obj in or_objects:       
+            org_min = cmds.getAttr(org_obj+'.boundingBoxMin')[0]
+            org_max = cmds.getAttr(org_obj+'.boundingBoxMax')[0]
+    
+            org_parent_transform = cmds.getAttr(org_obj+'.parentMatrix')        
             
-        else:
-            not_same.append(obj)
+            org_min = plus_parent_transform(org_min, org_parent_transform)
+            org_max = plus_parent_transform(org_max, org_parent_transform)
+    
+            for obj in o_objects:
+                min = cmds.getAttr(obj+'.boundingBoxMin')[0]
+                max = cmds.getAttr(obj+'.boundingBoxMax')[0]           
+                parent_transform = cmds.getAttr(obj+'.parentMatrix')
+        
+                min = plus_parent_transform(min, parent_transform)
+                max = plus_parent_transform(max, parent_transform)           
+    
+                comp_min = point_distance(org_min, min)
+                comp_max = point_distance(org_max, max)
+                   
+                if comp_min <= i and comp_max <= i:
+                    cmds.select(org_obj)
+                    cmds.select(obj, add=True)                
+                    blend()
+                    o_objects.remove(obj)
+                    or_objects.remove(org_obj)
+                    
+                    count = count + 1
+                else:
+                    try:
+                        not_same.index(obj)
+                    except ValueError:
+                        not_same.append(obj)
+    
+        print "Blended " + str(count)
+        print "Not same " + str(len(not_same))
+        
+        i = i + step
 
-    print "Blended " + str(count)
-    print "Not same " + str(len(not_same))
+def plus_parent_transform(transform, parent_transform):
+    return (transform[0]+parent_transform[12], transform[1]+parent_transform[13], transform[2]+parent_transform[14])
+    
 
-
+# Return distance of two points
 def point_distance(p1, p2):
-  return math.sqrt(math.pow(p1[0]-p2[0], 2)+math.pow(p1[1]-p2[1], 2)+math.pow(p1[2]-p2[2], 2))
+  return math.sqrt(math.pow(p2[0]-p1[0], 2)+math.pow(p2[1]-p1[1], 2)+math.pow(p2[2]-p1[2], 2))
 
 
 
