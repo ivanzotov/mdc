@@ -3,8 +3,6 @@ import maya.mel as mel
 import re
 import math
 
-# TODO Auto find near objects to blend
-
 completed_str = "Completed: %d percents"
 completed_per = 0
 
